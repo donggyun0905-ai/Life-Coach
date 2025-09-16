@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1) 저장소 코드 체크아웃
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2) Python 설치 (필요하면 버전 변경)
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 3) 의존성 설치 (requirements.txt 있는 경우)
+      - name: Install dependencies
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      # 4) 단순 테스트 (빌드 확인용)
+      - name: Run basic check
+        run: echo "✅ CI workflow ran successfully!"
