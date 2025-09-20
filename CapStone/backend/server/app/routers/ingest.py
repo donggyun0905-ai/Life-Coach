@@ -6,7 +6,7 @@ from ..schemas.database import SessionLocal
 from ..models.health_save import *
 
 router = APIRouter(prefix="/v1/ingest", tags=["ingest"])
-API_TOKEN = "CHANGE_ME"
+API_TOKEN = "capstone_token_0905"
 
 def get_db():
     db = SessionLocal()
@@ -81,3 +81,4 @@ def ingest_oxygens(records: List[OxygenDTO], authorization: str | None = Header(
         saved = save_oxygen(db, record)
         saved_ids.append(saved.id)
     return {"ok": True, "ids": saved_ids}
+
