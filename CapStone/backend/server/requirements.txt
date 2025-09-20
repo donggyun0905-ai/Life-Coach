@@ -4,4 +4,5 @@ pydantic==2.8.2
 sqlalchemy==2.0.30
 aiofiles==23.2.1
 opencv-python==4.9.0.80
-Pillow==10.3.0
+
+Pillow==10.2.0
