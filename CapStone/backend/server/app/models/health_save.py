@@ -13,7 +13,7 @@ from ..schemas.dto import (
 def save_step(db: Session, record: StepDTO):
     stmt = insert(StepData).values(**record.dict())
     stmt = stmt.on_conflict_do_update(
-        index_elements=["start_time", "end_time"],  # 고유키
+        index_elements=["start_time", "end_time", "count"],  # UniqueConstraint에 맞춤
         set_=record.dict()
     )
     db.execute(stmt)
@@ -23,7 +23,7 @@ def save_step(db: Session, record: StepDTO):
 def save_heartrate(db: Session, record: HeartRateDTO):
     stmt = insert(HeartRateData).values(**record.dict())
     stmt = stmt.on_conflict_do_update(
-        index_elements=["time"],  # 심박수는 단일 time 기준
+        index_elements=["time", "bpm"],  # UniqueConstraint에 맞춤
         set_=record.dict()
     )
     db.execute(stmt)
@@ -33,7 +33,7 @@ def save_heartrate(db: Session, record: HeartRateDTO):
 def save_distance(db: Session, record: DistanceDTO):
     stmt = insert(DistanceData).values(**record.dict())
     stmt = stmt.on_conflict_do_update(
-        index_elements=["start_time", "end_time"],
+        index_elements=["start_time", "end_time", "distance"],  # UniqueConstraint에 맞춤
         set_=record.dict()
     )
     db.execute(stmt)
@@ -43,7 +43,7 @@ def save_distance(db: Session, record: DistanceDTO):
 def save_calories(db: Session, record: CaloriesDTO):
     stmt = insert(CaloriesData).values(**record.dict())
     stmt = stmt.on_conflict_do_update(
-        index_elements=["start_time", "end_time"],
+        index_elements=["start_time", "end_time", "energy_kcal"],  # UniqueConstraint에 맞춤
         set_=record.dict()
     )
     db.execute(stmt)
@@ -53,7 +53,7 @@ def save_calories(db: Session, record: CaloriesDTO):
 def save_sleep(db: Session, record: SleepDTO):
     stmt = insert(SleepData).values(**record.dict())
     stmt = stmt.on_conflict_do_update(
-        index_elements=["start_time", "end_time"],
+        index_elements=["start_time", "end_time", "title"],  # UniqueConstraint에 맞춤
         set_=record.dict()
     )
     db.execute(stmt)
@@ -63,7 +63,7 @@ def save_sleep(db: Session, record: SleepDTO):
 def save_exercise(db: Session, record: ExerciseDTO):
     stmt = insert(ExerciseData).values(**record.dict())
     stmt = stmt.on_conflict_do_update(
-        index_elements=["start_time", "end_time"],
+        index_elements=["start_time", "end_time", "title"],  # UniqueConstraint에 맞춤
         set_=record.dict()
     )
     db.execute(stmt)
@@ -73,7 +73,7 @@ def save_exercise(db: Session, record: ExerciseDTO):
 def save_oxygen(db: Session, record: OxygenDTO):
     stmt = insert(OxygenData).values(**record.dict())
     stmt = stmt.on_conflict_do_update(
-        index_elements=["time"],  # 산소포화도는 단일 time 기준
+        index_elements=["time", "percentage"],  # UniqueConstraint에 맞춤
         set_=record.dict()
     )
     db.execute(stmt)
