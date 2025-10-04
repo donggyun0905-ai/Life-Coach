@@ -26,16 +26,18 @@ def get_user_data(
     def filter_query(model):
         q = db.query(model).filter(model.uid == uid)
         if start:
-            q = q.filter(model.start_time >= start)
+            # start_time이 있으면 start_time 기준 필터, 없으면 time 기준
+            if hasattr(model, "start_time"):
+                q = q.filter(model.start_time >= start)
+            elif hasattr(model, "time"):
+                q = q.filter(model.time >= start)
         if end:
-            # time 컬럼 쓰는 모델(심박수, 산소)은 예외 처리
             if hasattr(model, "end_time"):
                 q = q.filter(model.end_time <= end)
             elif hasattr(model, "time"):
                 q = q.filter(model.time <= end)
         return q.all()
 
-    # type 별 처리
     type_map = {
         "steps": StepData,
         "heart_rate": HeartRateData,
