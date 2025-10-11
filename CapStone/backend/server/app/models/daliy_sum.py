@@ -1,8 +1,10 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from datetime import datetime, timedelta, date
-from health import StepData, HeartRateData, DistanceData, CaloriesData, SleepData, ExerciseData, OxygenData
-from health import DailySummary
+from ..models.health import (
+    StepData, HeartRateData, DistanceData, CaloriesData,
+    SleepData, ExerciseData, OxygenData, DailySummary
+)
 
 def daily_summary(db: Session, uid: str, target_date: date):
     start_dt = datetime.combine(target_date, datetime.min.time())
@@ -75,3 +77,4 @@ def daily_summary(db: Session, uid: str, target_date: date):
     db.commit()
     db.refresh(daily)
     return daily
+
