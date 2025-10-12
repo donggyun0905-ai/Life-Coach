@@ -5,6 +5,9 @@ from sqlalchemy.orm import Session
 from ..schemas.database import get_db
 from ..models.fcm import FcmToken
 import os, json, requests
+
+# ✅ 추가!!!
+from google.auth.transport.requests import Request
 from google.oauth2 import service_account
 
 router = APIRouter(prefix="/v1/fcm", tags=["fcm"])
@@ -19,13 +22,10 @@ class FcmRegisterRequest(BaseModel):
 @router.post("/register")
 def register_fcm_token(req: FcmRegisterRequest, db: Session = Depends(get_db)):
     existing = db.query(FcmToken).filter(FcmToken.uid == req.uid).first()
-
     if existing:
         existing.token = req.token
     else:
-        new_token = FcmToken(uid=req.uid, token=req.token)
-        db.add(new_token)
-
+        db.add(FcmToken(uid=req.uid, token=req.token))
     db.commit()
     return {"ok": True}
 
@@ -53,8 +53,10 @@ def push_silent(req: PushRequest, db: Session = Depends(get_db)):
         creds_info,
         scopes=["https://www.googleapis.com/auth/firebase.messaging"]
     )
-    request = requests.Request()
-    credentials.refresh(request)
+
+    # ✅ 핵심 수정: google.auth.transport.requests.Request() 사용
+    google_request = Request()
+    credentials.refresh(google_request)
     access_token = credentials.token
 
     project_id = creds_info["project_id"]
@@ -81,4 +83,3 @@ def push_silent(req: PushRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"FCM v1 error: {res.text}")
 
     return {"ok": True}
-
