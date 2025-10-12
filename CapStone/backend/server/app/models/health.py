@@ -4,6 +4,7 @@ from sqlalchemy import UniqueConstraint
 # 🚶 Steps
 class StepData(Base):
     __tablename__ = "steps_data"
+    id = Column(Integer, primary_key=True, index=True)
     uid = Column(String(255), nullable=False)
     count = Column(BigInteger, nullable=False)
     start_time = Column(DateTime, nullable=False)
@@ -92,3 +93,4 @@ class DailySummary(Base):
 from ..schemas.database import Base, engine
 from ..models import health
 Base.metadata.create_all(bind=engine)
+
