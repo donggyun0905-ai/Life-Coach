@@ -4,7 +4,8 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from ..schemas.database import get_db
 from ..models.fcm import FcmToken
-import os, requests
+import os, json, requests
+from google.oauth2 import service_account
 
 router = APIRouter(prefix="/v1/fcm", tags=["fcm"])
 
@@ -30,34 +31,52 @@ def register_fcm_token(req: FcmRegisterRequest, db: Session = Depends(get_db)):
 
 
 # ================================
-# 2️⃣ Silent Push 발송
+# 2️⃣ Silent Push 발송 (HTTP v1 방식)
 # ================================
-FCM_SERVER_KEY = os.getenv("FCM_SERVER_KEY")  # ✅ Render 환경변수에 저장해둬야 함
-
 class PushRequest(BaseModel):
     uid: str
 
 @router.post("/push")
 def push_silent(req: PushRequest, db: Session = Depends(get_db)):
+    # ✅ 1. DB에서 토큰 조회
     token_row = db.query(FcmToken).filter(FcmToken.uid == req.uid).first()
     if not token_row:
         raise HTTPException(status_code=404, detail="FCM token not found for uid")
 
-    if not FCM_SERVER_KEY:
-        raise HTTPException(status_code=500, detail="FCM_SERVER_KEY not configured")
+    # ✅ 2. Render 환경변수에서 서비스 계정 JSON 읽기
+    creds_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON")
+    if not creds_json:
+        raise HTTPException(status_code=500, detail="Service account credentials not configured")
+
+    creds_info = json.loads(creds_json)
+    credentials = service_account.Credentials.from_service_account_info(
+        creds_info,
+        scopes=["https://www.googleapis.com/auth/firebase.messaging"]
+    )
+    credentials.refresh(requests.Request())
+    access_token = credentials.token
+
+    project_id = creds_info["project_id"]
+    url = f"https://fcm.googleapis.com/v1/projects/{project_id}/messages:send"
+
+    # ✅ 3. Silent push payload (data-only)
+    payload = {
+        "message": {
+            "token": token_row.token,
+            "data": {
+                "type": "sync_trigger"
+            }
+        }
+    }
 
     headers = {
-        "Authorization": f"key={FCM_SERVER_KEY}",
-        "Content-Type": "application/json",
-    }
-    payload = {
-        "to": token_row.token,
-        "priority": "high",  # 즉시 전달
-        "data": {"type": "sync_trigger"}  # 앱 쪽에서 이 type을 받으면 Worker 실행
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json"
     }
 
-    res = requests.post("https://fcm.googleapis.com/fcm/send", headers=headers, json=payload)
+    # ✅ 4. FCM HTTP v1 요청
+    res = requests.post(url, headers=headers, json=payload)
     if res.status_code != 200:
-        raise HTTPException(status_code=500, detail=f"FCM error: {res.text}")
+        raise HTTPException(status_code=500, detail=f"FCM v1 error: {res.text}")
 
     return {"ok": True}
