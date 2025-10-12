@@ -53,7 +53,8 @@ def push_silent(req: PushRequest, db: Session = Depends(get_db)):
         creds_info,
         scopes=["https://www.googleapis.com/auth/firebase.messaging"]
     )
-    credentials.refresh(requests.Request())
+    request = requests.Request()
+    credentials.refresh(request)
     access_token = credentials.token
 
     project_id = creds_info["project_id"]
@@ -80,3 +81,4 @@ def push_silent(req: PushRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"FCM v1 error: {res.text}")
 
     return {"ok": True}
+
