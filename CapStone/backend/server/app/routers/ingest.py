@@ -6,7 +6,7 @@ from datetime import date
 
 from ..models.health import (
     StepData, HeartRateData, DistanceData, CaloriesData,
-    SleepData, ExerciseData, OxygenData
+    SleepData, ExerciseData, OxygenData, DailySummary
 )
 from ..schemas.dto import (
     StepDTO, HeartRateDTO, DistanceDTO, CaloriesDTO,
@@ -45,7 +45,46 @@ def ingest_steps(data: List[StepDTO], db: Session = Depends(get_db)):
     return {"ok": True}
 
 
-# ❤️ Heart Rate
+def update_daily_heart_summary(db: Session, uid: str, target_date: date):
+    records = (
+        db.query(HeartRateData)
+        .filter(
+            HeartRateData.uid == uid,
+            HeartRateData.time >= f"{target_date} 00:00:00",
+            HeartRateData.time <= f"{target_date} 23:59:59"
+        )
+        .all()
+    )
+
+    if not records:
+        return
+
+    bpm_values = [r.bpm for r in records]
+    avg_bpm = sum(bpm_values) / len(bpm_values)
+    max_bpm = max(bpm_values)
+    min_bpm = min(bpm_values)
+
+    summary = (
+        db.query(DailySummary)
+        .filter(DailySummary.uid == uid, DailySummary.date == target_date)
+        .first()
+    )
+
+    if summary:
+        summary.avg_heart_rate = avg_bpm  # ✅ 여기선 평균만 저장 (원하면 min/max 컬럼도 추가 가능)
+    else:
+        summary = DailySummary(
+            uid=uid,
+            date=target_date,
+            avg_heart_rate=avg_bpm
+        )
+        db.add(summary)
+
+    db.commit()
+    print(f"🫀 {uid} {target_date} 심박수 집계 완료 → 평균: {avg_bpm:.2f}, 최대: {max_bpm}, 최소: {min_bpm}")
+
+
+# ❤️ Heart Rate - ✅ 중복방지 + 하루 요약 반영
 @router.post("/heartrate")
 def ingest_heartrates(data: List[HeartRateDTO], db: Session = Depends(get_db)):
     for item in data:
@@ -62,6 +101,12 @@ def ingest_heartrates(data: List[HeartRateDTO], db: Session = Depends(get_db)):
         else:
             db.add(HeartRateData(**item.dict()))
     db.commit()
+
+    if data:
+        uid = data[0].uid
+        today = data[0].time.date()
+        update_daily_heart_summary(db, uid, today)
+
     return {"ok": True}
 
 
