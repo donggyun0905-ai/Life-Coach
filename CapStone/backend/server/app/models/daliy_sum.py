@@ -47,6 +47,8 @@ def daily_summary(db: Session, uid: str, target_date: date):
         SleepData.end_time < end_dt  # 👈 end_time 기준으로 하루 판정
     ).scalar() or 0
 
+    sleep_minutes = int(sleep_seconds / 60)
+
     # 🏃 운동 시간(시간 단위)
     exercise_seconds = db.query(func.sum(func.extract('epoch', ExerciseData.end_time - ExerciseData.start_time)))\
         .filter(ExerciseData.uid == uid, ExerciseData.start_time >= start_dt, ExerciseData.end_time < end_dt)\
@@ -92,3 +94,4 @@ def daily_summary(db: Session, uid: str, target_date: date):
     db.commit()
     db.refresh(daily)
     return daily
+
