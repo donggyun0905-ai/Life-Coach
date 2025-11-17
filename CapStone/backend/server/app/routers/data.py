@@ -6,6 +6,7 @@ from ..schemas.database import get_db
 from ..models.health import *
 from ..models.fcm import FcmToken  # ✅ FCM 토큰 저장 모델
 import requests
+from datetime import datetime, date
 
 router = APIRouter(prefix="/v1/data", tags=["data"])
 
@@ -146,3 +147,4 @@ def get_user_health_data(fcm_token: str, data_type: str, start_date: str, end_da
     else:
         print(f"❌ 요청 실패 ({response.status_code}): {response.text}")
         return None
+
