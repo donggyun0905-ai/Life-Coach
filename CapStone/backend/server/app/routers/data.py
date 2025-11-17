@@ -70,6 +70,82 @@ def get_my_data(
 
 
 # ------------------------------
+# ✅ 모든 데이터 요약 api
+# ------------------------------
+@router.get("/me/summary")
+def get_my_summary(
+    fcm_token: str = Header(...),
+    type: str = Query(..., description="steps, heart_rate"),
+    start_date: datetime = Query(...),
+    end_date: datetime = Query(...),
+    db: Session = Depends(get_db)
+):
+    """
+    🚀 원본 데이터가 너무 클 때 사용하는 Summary 조회용 API
+    - steps → 총합, 평균
+    - heart_rate → 평균, 최저, 최고
+    """
+
+    # 1) FCM → UID 가져오기
+    record = db.query(FcmToken).filter(FcmToken.token == fcm_token).first()
+    if not record:
+        raise HTTPException(status_code=401, detail="Invalid FCM token")
+    uid = record.uid
+
+    # 2) 원본 데이터 모델 선택
+    type_map = {
+        "steps": StepData,
+        "heart_rate": HeartRateData,
+    }
+    model = type_map.get(type)
+    if not model:
+        raise HTTPException(status_code=400, detail=f"Invalid type: {type}")
+
+    # 3) 기간 필터
+    q = db.query(model).filter(model.uid == uid)
+    if hasattr(model, "time"):
+        q = q.filter(model.time >= start_date, model.time <= end_date)
+    else:
+        q = q.filter(model.start_time >= start_date, model.end_time <= end_date)
+
+    data = q.all()
+
+    # 4) Summary 계산
+    if type == "steps":
+        values = [d.count for d in data]
+        total = sum(values)
+        avg = total / len(values) if values else 0
+
+        return {
+            "uid": uid,
+            "type": "steps",
+            "total_steps": total,
+            "average_steps": avg,
+            "records": len(values)
+        }
+
+    if type == "heart_rate":
+        values = [d.bpm for d in data]
+
+        if not values:
+            return {
+                "uid": uid,
+                "type": "heart_rate",
+                "summary": "No data",
+                "records": 0
+            }
+
+        return {
+            "uid": uid,
+            "type": "heart_rate",
+            "min_bpm": min(values),
+            "max_bpm": max(values),
+            "avg_bpm": sum(values) / len(values),
+            "records": len(values)
+        }
+
+
+# ------------------------------
 # ✅ 개발자용 통합 함수 (외부에서도 바로 호출 가능)
 # ------------------------------
 BASE_URL = "https://capstone-lozi.onrender.com/v1/data/me"
