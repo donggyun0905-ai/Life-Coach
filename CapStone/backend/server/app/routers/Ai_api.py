@@ -1,5 +1,3 @@
-# app/routers/ai.py
-
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from datetime import date, timedelta
@@ -22,11 +20,9 @@ def predict_15days(
     db: Session = Depends(get_db)
 ):
 
-    # 오늘 날짜
     today = date.today()
     start_day = today - timedelta(days=15)
 
-    # 15일 summary 가져오기
     rows = (
         db.query(DailySummary)
         .filter(
@@ -38,7 +34,7 @@ def predict_15days(
         .all()
     )
 
-    # AI가 원하는 포맷으로 변환
+    # 데이터 변환
     health_data = []
     for r in rows:
         health_data.append({
@@ -53,12 +49,12 @@ def predict_15days(
 
     if len(health_data) < 5:
         return {
+            "uid": uid,
             "error": "데이터 부족",
             "message": "AI 예측을 위해 최소 5일 이상의 summary 데이터가 필요합니다.",
-            "days_loaded": len(health_data)
+            "days_loaded": len(health_data),
         }
 
-    # AI 호출
     result = run_open_ai_health_predict(
         ver=1,
         health_data=health_data
