@@ -95,16 +95,16 @@ def run_open_ai_health_predict(ver=1, health_data=None):
 
     ===========================================
     📌 출력 형식 (무조건 JSON만 출력)
-    {
-      "health_score": 숫자,
-      "predicted_steps": 숫자,
-      "predicted_distance_m": 숫자,
-      "predicted_calories_kcal": 숫자,
-      "predicted_avg_heart_rate": 숫자,
-      "predicted_sleep_minutes": 숫자,
-      "predicted_avg_oxygen": 숫자,
-      "one_line_advice": "한국어 문장"
-    }
+{
+  "{{health_score}}": 0,
+  "{{predicted_steps}}": 0,
+  "{{predicted_distance_m}}": 0,
+  "{{predicted_calories_kcal}}": 0,
+  "{{predicted_avg_heart_rate}}": 0,
+  "{{predicted_sleep_minutes}}": 0,
+  "{{predicted_avg_oxygen}}": 0,
+  "{{one_line_advice}}": "문장"
+}
 
     ⚠️ 반드시 JSON만 출력하십시오.
                 """,
@@ -152,3 +152,4 @@ def run_open_ai_health_predict(ver=1, health_data=None):
         result = {"raw_text": response, "message": "⚠️ JSON 변환 실패 (모델이 텍스트로 응답했을 수 있습니다.)"}
 
     return result
+
