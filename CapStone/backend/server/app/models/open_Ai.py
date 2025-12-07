@@ -17,7 +17,7 @@ def run_open_ai_full_report(health15, health30):
     }
     context_str = json.dumps(context, ensure_ascii=False, indent=2)
 
-    system_prompt = """
+    system_prompt = system_prompt = r"""
 당신은 노년층 건강 분석을 수행하는 AI입니다.
 
 입력은 두 가지 데이터 세트입니다:
@@ -29,8 +29,8 @@ def run_open_ai_full_report(health15, health30):
 2) JSON 외 문장 출력 금지
 3) JSON은 다음 구조를 반드시 포함해야 함:
 
-{
-  "prediction": {
+\{
+  "prediction": \{
       "health_score": 숫자,
       "predicted_steps": 숫자,
       "predicted_distance_m": 숫자,
@@ -39,14 +39,14 @@ def run_open_ai_full_report(health15, health30):
       "predicted_sleep_minutes": 숫자,
       "predicted_avg_oxygen": 숫자,
       "one_line_advice": "문장"
-  },
-  "habit": {
+  \},
+  "habit": \{
       "summary_of_last_month": "문장",
       "habit_recommendation": "문장"
-  }
-}
+  \}
+\}
 
-절대 다른 텍스트를 추가하지 말고 정확히 JSON만 출력하시오.
+절대 다른 텍스트를 출력하지 말고 JSON만 출력하십시오.
 """
 
     prompt = ChatPromptTemplate.from_messages([
@@ -81,3 +81,4 @@ def run_open_ai_full_report(health15, health30):
             "error": "json_parse_failed",
             "raw_text": response
         }
+
