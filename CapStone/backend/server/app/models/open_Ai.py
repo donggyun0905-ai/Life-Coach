@@ -10,47 +10,42 @@ def run_open_ai_full_report(health15, health30):
     google_api_key = os.getenv("GOOGLE_API_KEY")
     print("🔑 Google API Key:", "불러옴" if google_api_key else "❌ 없음")
 
-    # 2개 데이터 한번에 JSON 으로 묶기
+    # 2개 데이터 묶기
     context = {
         "last_15_days": health15,
         "last_30_days": health30
     }
     context_str = json.dumps(context, ensure_ascii=False, indent=2)
 
-    system_prompt =system_prompt = system_prompt = """
+    system_prompt = """
 당신은 노년층 건강 분석을 수행하는 AI입니다.
 
-입력은 두 가지 데이터 세트입니다:
-1) 최근 15일 요약 데이터
-2) 최근 30일 요약 데이터
+입력: 최근 15일 요약 데이터 + 최근 30일 요약 데이터
 
-출력 규칙:
-1) 반드시 JSON 형식으로 출력
-2) JSON 외 문장 출력 금지
-3) JSON은 두 개의 최상위 항목을 포함해야 함: prediction, habit
-
-각 항목 구성 규칙:
+출력:
+1) JSON만 출력
+2) 최상위 2개의 key 포함 → prediction, habit
 
 [prediction]
-- health_score: 숫자
-- predicted_steps: 숫자
-- predicted_distance_m: 숫자
-- predicted_calories_kcal: 숫자
-- predicted_avg_heart_rate: 숫자
-- predicted_sleep_minutes: 숫자
-- predicted_avg_oxygen: 숫자
-- one_line_advice: 한 줄 조언 문자열
+- health_score
+- predicted_steps
+- predicted_distance_m
+- predicted_calories_kcal
+- predicted_avg_heart_rate
+- predicted_sleep_minutes
+- predicted_avg_oxygen
+- one_line_advice
 
 [habit]
-- summary_of_last_month: 한 달간 건강 경향을 요약한 문장
-- habit_recommendation: 생활 습관 개선 전략을 담은 문장
+- summary_of_last_month
+- habit_recommendation
 
 설명 없이 JSON만 출력하십시오.
 """
 
     prompt = ChatPromptTemplate.from_messages([
         ("system", system_prompt),
-        ("human", "다음은 최근 15일 & 30일 건강 데이터입니다:\n{context}\n\n위 JSON 형식 그대로 출력하십시오.")
+        ("human", "다음은 건강 데이터입니다:\n{context}\n\nJSON만 출력하십시오.")
     ])
 
     llm = ChatGoogleGenerativeAI(
@@ -62,16 +57,30 @@ def run_open_ai_full_report(health15, health30):
 
     chain = prompt | llm | StrOutputParser()
 
-    response = chain.invoke({"context": context_str})
+    # -------------------- AI 호출 안전처리 --------------------
+    try:
+        response = chain.invoke({"context": context_str})
 
-    # 쿼터 초과 감지
-    if "quota" in response.lower() or "exceeded" in response.lower() or "429" in response:
+    except Exception as e:
+        if "429" in str(e) or "quota" in str(e).lower():
+            return {
+                "error": "quota_exceeded",
+                "message": "AI 모델 무료 사용량이 소진되었습니다. 결제를 활성화해야 합니다."
+            }
         return {
-            "error": "quota_exceeded",
-            "message": "AI 무료 사용량이 소진되었습니다. 유료 결제를 활성화해야 계속 사용할 수 있습니다."
+            "error": "ai_call_failed",
+            "detail": str(e)
         }
 
-    # JSON 파싱
+    # -------------------- 응답에서 에러 텍스트 감지 --------------------
+    if any(x in response.lower() for x in ["quota", "exceeded", "429"]):
+        return {
+            "error": "quota_exceeded",
+            "message": "AI 모델 호출이 차단되었습니다.",
+            "raw_text": response
+        }
+
+    # -------------------- JSON 파싱 --------------------
     try:
         cleaned = response.replace("```json", "").replace("```", "").strip()
         return json.loads(cleaned)
