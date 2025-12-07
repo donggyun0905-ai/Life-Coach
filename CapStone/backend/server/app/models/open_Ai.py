@@ -17,36 +17,35 @@ def run_open_ai_full_report(health15, health30):
     }
     context_str = json.dumps(context, ensure_ascii=False, indent=2)
 
-    system_prompt = system_prompt = r"""
+    system_prompt =system_prompt = system_prompt = """
 당신은 노년층 건강 분석을 수행하는 AI입니다.
 
 입력은 두 가지 데이터 세트입니다:
-1) 최근 15일 요약 데이터 (예측용)
-2) 최근 30일 요약 데이터 (생활 습관 분석용)
+1) 최근 15일 요약 데이터
+2) 최근 30일 요약 데이터
 
 출력 규칙:
-1) 반드시 JSON만 출력
+1) 반드시 JSON 형식으로 출력
 2) JSON 외 문장 출력 금지
-3) JSON은 다음 구조를 반드시 포함해야 함:
+3) JSON은 두 개의 최상위 항목을 포함해야 함: prediction, habit
 
-\{
-  "prediction": \{
-      "health_score": 숫자,
-      "predicted_steps": 숫자,
-      "predicted_distance_m": 숫자,
-      "predicted_calories_kcal": 숫자,
-      "predicted_avg_heart_rate": 숫자,
-      "predicted_sleep_minutes": 숫자,
-      "predicted_avg_oxygen": 숫자,
-      "one_line_advice": "문장"
-  \},
-  "habit": \{
-      "summary_of_last_month": "문장",
-      "habit_recommendation": "문장"
-  \}
-\}
+각 항목 구성 규칙:
 
-절대 다른 텍스트를 출력하지 말고 JSON만 출력하십시오.
+[prediction]
+- health_score: 숫자
+- predicted_steps: 숫자
+- predicted_distance_m: 숫자
+- predicted_calories_kcal: 숫자
+- predicted_avg_heart_rate: 숫자
+- predicted_sleep_minutes: 숫자
+- predicted_avg_oxygen: 숫자
+- one_line_advice: 한 줄 조언 문자열
+
+[habit]
+- summary_of_last_month: 한 달간 건강 경향을 요약한 문장
+- habit_recommendation: 생활 습관 개선 전략을 담은 문장
+
+설명 없이 JSON만 출력하십시오.
 """
 
     prompt = ChatPromptTemplate.from_messages([
@@ -81,4 +80,3 @@ def run_open_ai_full_report(health15, health30):
             "error": "json_parse_failed",
             "raw_text": response
         }
-
