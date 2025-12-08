@@ -348,3 +348,50 @@ async def ingest_pill_image(
         "created_at": pill.created_at,
     }
 
+# 💊 Pill results 조회 API
+@router.get("/pill_list")
+def get_pill_list(uid: str, db: Session = Depends(get_db), _auth: None = Depends(check_auth)):
+    results = (
+        db.query(PillResult)
+        .filter(PillResult.uid == uid)
+        .order_by(PillResult.created_at.desc())
+        .all()
+    )
+
+    return [
+        {
+            "id": r.id,
+            "image_path": r.image_path,
+            "pill_name": r.pill_name,
+            "appearance": r.appearance,
+            "main_usage": r.main_usage,
+            "warning": r.warning,
+            "extra_advice": r.extra_advice,
+            "created_at": r.created_at,
+        }
+        for r in results
+    ]
+
+# 💊 Pill Result 삭제 API
+@router.delete("/pill/{pill_id}")
+def delete_pill_result(
+    pill_id: int,
+    db: Session = Depends(get_db),
+    _auth: None = Depends(check_auth)
+):
+    record = db.query(PillResult).filter(PillResult.id == pill_id).first()
+
+    if not record:
+        raise HTTPException(status_code=404, detail="삭제할 데이터가 없습니다.")
+
+    # 이미지 파일도 같이 삭제
+    if record.image_path and os.path.exists(record.image_path):
+        try:
+            os.remove(record.image_path)
+        except:
+            pass  # 파일 삭제 실패해도 DB 삭제는 진행
+
+    db.delete(record)
+    db.commit()
+
+    return {"ok": True, "deleted_id": pill_id}
