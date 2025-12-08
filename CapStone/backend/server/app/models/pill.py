@@ -20,6 +20,7 @@ class PillResult(Base):
     extra_advice = Column(Text, nullable=True)       # 추가 조언
 
     # 원본 LLM JSON 전체를 문자열로 저장
-    raw_json = Column(Text, nullable=True)
+    info_json = Column(Text, nullable=True)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
