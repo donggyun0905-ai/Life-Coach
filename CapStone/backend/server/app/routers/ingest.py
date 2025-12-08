@@ -328,7 +328,7 @@ async def ingest_pill_image(
         main_usage=llm_result.get("main_usage"),
         warning=llm_result.get("warning"),
         extra_advice=llm_result.get("extra_advice"),
-        raw_json=json.dumps(llm_result, ensure_ascii=False),
+        info_json=json.dumps(llm_result, ensure_ascii=False),
     )
     db.add(pill)
     db.commit()
@@ -347,3 +347,4 @@ async def ingest_pill_image(
         "extra_advice": pill.extra_advice,
         "created_at": pill.created_at,
     }
+
