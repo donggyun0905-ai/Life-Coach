@@ -1,0 +1,107 @@
+.app-menu {
+  gap: var(--space-3);
+  padding-left: var(--space-3);
+  padding-right: var(--space-3);
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.uid-search {
+  margin-top: var(--space-2);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3);
+  width: min(480px, 92vw);
+}
+
+.uid-search-label {
+  font-size: 19px;
+  font-weight: 800;
+  width: 100%;
+  text-align: center;
+  color: var(--color-secondary-dark);
+}
+
+.uid-search-input {
+  all: unset;
+  box-sizing: border-box;
+  flex: 1;
+  min-width: 160px;
+  height: 56px;
+  font-size: 20px;
+  padding: 0 var(--space-2);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-alt);
+}
+
+.uid-search-button {
+  all: unset;
+  box-sizing: border-box;
+  height: 56px;
+  padding: 0 var(--space-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  font-size: 19px;
+  font-weight: 800;
+  box-shadow: var(--shadow-sm);
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.uid-search-button:hover {
+  background: var(--color-primary-dark);
+}
+
+.uid-search-button:active {
+  transform: scale(0.96);
+}
+
+.role-buttons {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+}
+
+.guardian-button,
+.user-button {
+  all: unset;
+  box-sizing: border-box;
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-secondary);
+  color: var(--color-primary-contrast);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  font-size: 19px;
+  font-weight: 800;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.guardian-button:hover,
+.user-button:hover {
+  background: var(--color-secondary-dark);
+}
+
+.guardian-button:active,
+.user-button:active {
+  transform: scale(0.96);
+}

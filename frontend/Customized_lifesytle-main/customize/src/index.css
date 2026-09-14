@@ -1,0 +1,376 @@
+:root {
+  /* ============ 따뜻한 케어 팔레트 ============ */
+  --color-bg: #faf6f0;
+  --color-bg-glow: #fff1e6;
+  --color-surface: #ffffff;
+  --color-surface-alt: #fff1e8;
+
+  --color-primary: #ff7a59;
+  --color-primary-dark: #e85f3d;
+  --color-primary-light: #ffe1d6;
+
+  --color-secondary: #2f6f5e;
+  --color-secondary-dark: #23574a;
+  --color-secondary-light: #e2efec;
+
+  --color-gold: #d99a12;
+  --color-gold-light: #fbf0da;
+
+  --color-text: #2b2420;
+  --color-text-muted: #8a7c6f;
+  --color-border: #efe2d2;
+
+  --color-success: #2f6f5e;
+  --color-success-bg: #e2efec;
+  --color-warning: #d99a12;
+  --color-warning-bg: #fbf0da;
+  --color-danger: #e2453c;
+  --color-danger-bg: #fbe4e1;
+  --color-primary-contrast: #ffffff;
+
+  --radius-sm: 14px;
+  --radius-md: 22px;
+  --radius-lg: 32px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 4px 16px rgba(120, 72, 30, 0.08);
+  --shadow-md: 0 14px 34px rgba(120, 72, 30, 0.12);
+  --shadow-lg: 0 26px 56px rgba(120, 72, 30, 0.16);
+
+  --space-1: 8px;
+  --space-2: 14px;
+  --space-3: 24px;
+  --space-4: 36px;
+  --space-5: 56px;
+
+  --header-height: 104px;
+  --tabbar-height: 78px;
+  --font-sans: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    'Roboto', 'Malgun Gothic', sans-serif;
+
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(1200px 500px at 12% -8%, var(--color-bg-glow) 0%, transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, var(--color-secondary-light) 0%, transparent 55%),
+    var(--color-bg);
+  background-attachment: fixed;
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  word-break: keep-all;
+  line-height: 1.5;
+}
+
+button, input {
+  font-family: inherit;
+}
+
+button {
+  touch-action: manipulation;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+img {
+  max-width: 100%;
+}
+
+h1, h2, h3 {
+  color: var(--color-text);
+  font-weight: 800;
+}
+
+/* =========================================================
+   공용 레이아웃: 모든 화면이 공유하는 상단 헤더 + 컨텐츠 컨테이너
+   ========================================================= */
+.app-shell {
+  min-height: 100vh;
+  padding-top: calc(var(--header-height) + var(--space-3));
+  padding-bottom: calc(var(--tabbar-height) + var(--space-4));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* =========================================================
+   하단 고정 탭바 (로그인 후 모든 화면 공통)
+   ========================================================= */
+.bottom-tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--tabbar-height);
+  display: flex;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  box-shadow: 0 -8px 24px rgba(120, 72, 30, 0.08);
+  z-index: 1000;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.tab-btn {
+  all: unset;
+  box-sizing: border-box;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.tab-btn .tab-icon {
+  font-size: 26px;
+  line-height: 1;
+  transition: transform 0.15s ease;
+}
+
+.tab-btn .tab-label {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.tab-btn.active {
+  color: var(--color-primary-dark);
+}
+
+.tab-btn.active .tab-icon {
+  transform: translateY(-3px) scale(1.1);
+}
+
+.tab-btn:active {
+  transform: scale(0.94);
+}
+
+.image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-3);
+  background: linear-gradient(180deg, #fffaf5 0%, var(--color-bg) 100%);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.image .deep-stream {
+  height: 52px;
+  width: auto;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  padding: 4px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s ease;
+}
+
+.image .deep-stream:active {
+  transform: scale(0.94);
+}
+
+.image::after {
+  content: '라이프코치';
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--color-secondary-dark);
+  letter-spacing: -0.02em;
+}
+
+/* 로그인 상태 표시 점 */
+.login-indicator {
+  position: fixed;
+  top: calc((var(--header-height) - 26px) / 2);
+  right: var(--space-3);
+  z-index: 1100;
+}
+
+.login-dot {
+  all: unset;
+  box-sizing: border-box;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm), 0 0 0 4px var(--color-surface);
+  transition: transform 0.15s ease;
+}
+
+.login-dot.on {
+  background: var(--color-success);
+}
+
+.login-dot.off {
+  background: var(--color-danger);
+  cursor: default;
+}
+
+.login-dot:active {
+  transform: scale(0.88);
+}
+
+/* =========================================================
+   메인 메뉴형 큰 버튼 (걸음/피드백/복약 등) — 아이콘 배지 + 라벨
+   App.css / App_for_guard.css / App_for_user.css 공용
+   ========================================================= */
+.health,
+.feedback,
+.medication,
+.guardian-health,
+.guardian-feedback,
+.guardian-medication,
+.register,
+.user-health,
+.user-feedback,
+.user-medication {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: min(380px, 90vw);
+  height: 116px;
+  padding: 0 var(--space-3);
+  background: var(--color-surface);
+  border: 2px solid transparent;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  font-weight: 800;
+  text-align: left;
+  color: var(--color-text);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.health:hover,
+.feedback:hover,
+.medication:hover,
+.guardian-health:hover,
+.guardian-feedback:hover,
+.guardian-medication:hover,
+.register:hover,
+.user-health:hover,
+.user-feedback:hover,
+.user-medication:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+}
+
+.health:active,
+.feedback:active,
+.medication:active,
+.guardian-health:active,
+.guardian-feedback:active,
+.guardian-medication:active,
+.register:active,
+.user-health:active,
+.user-feedback:active,
+.user-medication:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: var(--shadow-sm);
+}
+
+/* 아이콘 배지 (기본: 코랄) */
+.btn-icon {
+  flex-shrink: 0;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  font-size: 32px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary-light);
+}
+
+/* 두 번째 메뉴(데이터 확인류)는 딥그린 배지 */
+.feedback .btn-icon,
+.guardian-feedback .btn-icon,
+.user-feedback .btn-icon {
+  background: var(--color-secondary-light);
+}
+
+/* 세 번째 메뉴(복약류)는 골드 배지 */
+.medication .btn-icon,
+.guardian-medication .btn-icon,
+.user-medication .btn-icon {
+  background: var(--color-gold-light);
+}
+
+/* 사용자 등록은 보조 액션이라 살짝 다르게 */
+.register {
+  background: var(--color-surface-alt);
+  border-style: dashed;
+  border-color: var(--color-primary);
+}
+
+.register .btn-icon {
+  background: var(--color-surface);
+}
+
+.btn-label {
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.top-close-btn {
+  all: unset;
+  cursor: pointer;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-sm);
+  box-sizing: border-box;
+  text-align: center;
+  font-weight: 800;
+  font-size: 16px;
+  padding: var(--space-1) var(--space-3);
+  position: fixed;
+  top: calc((var(--header-height) - 40px) / 2);
+  right: calc(var(--space-3) + 46px);
+  z-index: 1100;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.top-close-btn:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.top-close-btn:active {
+  transform: scale(0.96);
+}
+
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+}

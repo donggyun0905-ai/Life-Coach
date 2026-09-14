@@ -1,0 +1,6 @@
+.env
+*.env
+local_health.db
+__pycache__/
+*.pyc
+.venv/

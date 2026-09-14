@@ -1,0 +1,83 @@
+.mediinfo-container {
+  gap: var(--space-3);
+  padding-left: var(--space-3);
+  padding-right: var(--space-3);
+  width: 100%;
+}
+
+.mediInfo {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  box-sizing: border-box;
+  width: min(900px, 94vw);
+  min-height: 400px;
+  padding: var(--space-3);
+}
+
+.mediinfo-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  color: var(--color-text-muted);
+  font-size: 18px;
+}
+
+.medi-list {
+  font-size: 16px;
+  overflow-x: auto;
+}
+
+.medi-list table {
+  width: 100%;
+  min-width: 480px;
+  border-collapse: collapse;
+}
+
+.medi-list th {
+  text-align: left;
+  padding: var(--space-2) var(--space-2);
+  font-size: 15px;
+  color: var(--color-text-muted);
+  border-bottom: 2px solid var(--color-border);
+}
+
+.medi-list td {
+  padding: var(--space-2);
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.medi-name {
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.pill-main-usage {
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-1);
+}
+
+.pill-warning {
+  color: var(--color-danger);
+  font-weight: 700;
+}
+
+.medi-delete {
+  font-size: 14px;
+  padding: 6px 16px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--color-danger);
+  color: white;
+  cursor: pointer;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.medi-delete:hover {
+  opacity: 0.9;
+}

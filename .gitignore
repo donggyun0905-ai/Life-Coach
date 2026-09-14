@@ -1,0 +1,35 @@
+# ===== 공통 =====
+.DS_Store
+*.log
+.idea/
+.vscode/
+.claude/
+
+# ===== 비밀정보 (절대 커밋 금지) =====
+.env
+.env.*
+!.env.example
+smith.env
+*.env.bak
+
+# ===== android =====
+android/**/.gradle/
+android/**/build/
+android/**/.cxx/
+android/**/local.properties
+android/**/*.apk
+android/**/*.aab
+android/**/captures/
+android/**/.externalNativeBuild/
+
+# ===== backend =====
+backend/**/.venv/
+backend/**/__pycache__/
+backend/**/*.pyc
+backend/**/local_health.db
+backend/**/pill_uploads/
+
+# ===== frontend =====
+frontend/**/node_modules/
+frontend/**/build/
+frontend/**/coverage/
