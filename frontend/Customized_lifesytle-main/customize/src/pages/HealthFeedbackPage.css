@@ -1,0 +1,83 @@
+.healthfeedback-container {
+  gap: var(--space-3);
+  padding-left: var(--space-3);
+  padding-right: var(--space-3);
+}
+
+.hf-title {
+  font-size: 25px;
+  font-weight: 800;
+  margin: 0;
+  text-align: center;
+  color: var(--color-secondary-dark);
+}
+
+.hf-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.button-data,
+.button-feedback {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface);
+  border: 2px solid transparent;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  padding: var(--space-4) var(--space-3);
+  width: min(240px, 42vw);
+  min-width: 170px;
+  aspect-ratio: 1 / 1;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.button-data:hover,
+.button-feedback:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+}
+
+.button-data:active,
+.button-feedback:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.hf-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  text-align: center;
+}
+
+.hf-icon {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  font-size: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary-light);
+}
+
+.button-feedback .hf-icon {
+  background: var(--color-secondary-light);
+}
+
+.hf-label {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--color-text);
+  line-height: 1.4;
+}
