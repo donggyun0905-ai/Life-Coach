@@ -9,6 +9,6 @@ python-multipart
 requests==2.32.3
 
 # Pill photo analysis (Gemini Vision)
-Pillow==10.2.0
+Pillow>=10.4,<11
 google-generativeai
 google-auth
